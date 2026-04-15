@@ -1,0 +1,70 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
+
+public class NotesManager {
+    private static final String FILE_NAME = "notes.txt";
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        boolean running = true;
+
+        System.out.println("--- Elevate Labs: Notes App ---");
+
+        while (running) {
+            System.out.println("\n1. Add Note\n2. View Notes\n3. Exit");
+            System.out.print("Choose an option: ");
+            String choice = scanner.nextLine();
+
+            switch (choice) {
+                case "1":
+                    System.out.print("Enter your note: ");
+                    String note = scanner.nextLine();
+                    saveNote(note);
+                    break;
+                case "2":
+                    readNotes();
+                    break;
+                case "3":
+                    running = false;
+                    System.out.println("Exiting... Goodbye!");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+        scanner.close();
+    }
+
+   
+    private static void saveNote(String note) {
+       
+        try (FileWriter writer = new FileWriter(FILE_NAME, true)) {
+            writer.write(note + System.lineSeparator());
+            System.out.println("Note saved successfully.");
+        } catch (IOException e) {
+            System.err.println("Error writing to file: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+   
+    private static void readNotes() {
+        System.out.println("\n--- Your Saved Notes ---");
+        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME))) {
+            String line;
+            boolean hasContent = false;
+            while ((line = reader.readLine()) != null) {
+                System.out.println("- " + line);
+                hasContent = true;
+            }
+            if (!hasContent) {
+                System.out.println("No notes found.");
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+    }
+}
